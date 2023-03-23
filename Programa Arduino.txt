@@ -1,0 +1,30 @@
+#include <TimeLib.h>//Incluimos la librería Time
+
+int lm35Pin = A2;
+float temperatura = 0;
+
+void setup(){
+  pinMode(lm35Pin, INPUT);
+  Serial.begin(9600);
+  setTime(20,51,50,15,03,2023);
+}
+
+void loop(){
+  time_t t = now();//Declaramos la variable time_t t
+  temperatura = (float (analogRead(lm35Pin))*5/(1023))/0.01;
+  //Imprimimos la fecha y lahora
+  Serial.print(day(t));
+  Serial.print(+ "/") ;
+  Serial.print(month(t));
+  Serial.print(+ "/") ;
+  Serial.print(year(t)); 
+  Serial.print( " ") ;
+  Serial.print(hour(t));  
+  Serial.print(+ ":") ;
+  Serial.print(minute(t));
+  Serial.print(":") ;
+  Serial.println(second(t));
+  Serial.print("Temperatura: ");
+  Serial.println(temperatura);
+  delay(200);
+}

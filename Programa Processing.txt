@@ -1,0 +1,43 @@
+import processing.serial.*;
+import de.bezier.data.sql.*;
+
+Serial puertoSerie;
+MySQL msql;
+
+float temperatura = 0;
+
+void setup() {
+  size(300,300);
+  frameRate(200);
+  puertoSerie = new Serial(this, "COM3", 9600);
+  puertoSerie.bufferUntil('\n');
+  String user     = "root";
+  String pass     = "";
+  String dbHost   = "localhost";
+  String database = "Temperatura";
+  msql = new MySQL(this, dbHost, database, user, pass );
+  if(msql.connect()) {
+    println("Conectado");
+    }
+   else{
+     println("No Conectado");
+     }
+ }
+ 
+ void draw(){
+   background(300);
+   String valor = puertoSerie.readStringUntil('\n');
+   
+   if(valor != null){
+     float[] Values = float(split(valor, ","));
+     
+     textSize(30);
+     text("Temperatura: "+ Values[0] + " C",20,120);
+     temperatura = Values[0];
+     
+     msql.execute("Insert into temperatura.registro ( temperatura) Values("+temperatura+", Now());");
+     
+     delay(2000);
+     
+     }
+}
